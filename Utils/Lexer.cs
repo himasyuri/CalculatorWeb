@@ -32,7 +32,7 @@ namespace Calculator.Utils
 
         public Lexer(string expression)
         {
-            this.expression = expression + "endl";
+            this.expression = expression;
 
             TokenTypesDictionary = new Dictionary<int, TokenTypeModel>()
             {
@@ -42,10 +42,10 @@ namespace Calculator.Utils
                 { 3, new TokenTypeModel("multiply", @"\*")},
                 { 4, new TokenTypeModel("division", @"\/")},
                 { 5, new TokenTypeModel("exponentation", @"\^")},
-                { 6, new TokenTypeModel("sqrt", @"sqrt")},
-                { 7, new TokenTypeModel("lpar", @"\(")},
-                { 8, new TokenTypeModel("rpar", @"\)")},
-                { 9, new TokenTypeModel("endl", @"endl")}
+                { 6, new TokenTypeModel("lpar", @"\(")},
+                { 7, new TokenTypeModel("rpar", @"\)")},
+                { 8, new TokenTypeModel("sqrt", @"sqrt")},
+                { 9, new TokenTypeModel("endl", @"endl")},
             };
         }
 
@@ -63,6 +63,7 @@ namespace Calculator.Utils
         private bool NextToken()
         {
             int length = 1;
+            Match? result;
 
             if (position >= expression.Length)
             {
@@ -73,7 +74,34 @@ namespace Calculator.Utils
             {
                 Regex regex = new Regex(TokenTypesDictionary[i].Regex);
 
-                var result = regex.Match(expression.Substring(position, length));
+                if (i > 7) // word commands
+                {
+                    Regex letters = new Regex(@"[a-z]");
+                    int newPosition = position;
+                    while (CheckLength(letters, newPosition, length))
+                    {
+                        newPosition++;
+                        if (newPosition >= expression.Length)
+                        {
+                            break;
+                        }
+                    }
+
+                    length = newPosition - position;
+
+                    result = regex.Match(expression.Substring(position, length));
+
+                    if (result.Success)
+                    {
+                        var token = new TokenModel(TokenTypesDictionary[i], result.Value);
+                        position += result.Value.Length;
+                        TokenList.Add(token);
+
+                        return true;
+                    }
+                }
+
+                result = regex.Match(expression.Substring(position, length));
                 if (result.Success)
                 {
                     int newPosition = position;
@@ -100,9 +128,6 @@ namespace Calculator.Utils
 
                     result = complexNumsRegex.Match(expression.Substring(position, length));
 
-                    var subsr1 = expression.Substring(position, length);
-                    Console.WriteLine(subsr1);
-
                     if (result.Success)
                     {
                         var token = new TokenModel(TokenTypesDictionary[i], result.Value);
@@ -115,8 +140,6 @@ namespace Calculator.Utils
                 
 
                 result = regex.Match(expression.Substring(position, length));
-                var subsr = expression.Substring(position, length);
-                Console.WriteLine(subsr);
 
                 if (result.Success)
                 {
@@ -137,12 +160,6 @@ namespace Calculator.Utils
             if (regex.Match(expression.Substring(position, length)).Success)
             {
                 return true;
-            }
-
-            //for strings
-            if (regex.Match(expression.Substring(1,1)).Success) //TODO: check length of letters
-            {
-
             }
 
             return false;
