@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.RegularExpressions;
 using Calculator.Models;
 
@@ -61,6 +62,8 @@ namespace Calculator.Utils
 
         private bool NextToken()
         {
+            int length = 1;
+
             if (position >= expression.Length)
             {
                 return false;
@@ -69,10 +72,51 @@ namespace Calculator.Utils
             for (int i = 0; i < TokenTypesDictionary.Count; i++)
             {
                 Regex regex = new Regex(TokenTypesDictionary[i].Regex);
-                var subsr = expression.Substring(position, 1);
-                Console.WriteLine(subsr);
 
-                var result = regex.Match(expression.Substring(position, 1));
+                var result = regex.Match(expression.Substring(position, length));
+                if (result.Success)
+                {
+                    int newPosition = position;
+                    //get length of token
+                    while (CheckLength(regex, newPosition, length))
+                    {
+                        newPosition++;
+                    }
+
+                    length = newPosition - position;
+                }
+
+                //regex for complex numbers
+                if (length > 1 && i == 0)
+                {
+                    StringBuilder stringNums = new StringBuilder(TokenTypesDictionary[i].Regex);
+
+                    for (int j = 1; j < length; j++)
+                    {
+                        stringNums.Append(TokenTypesDictionary[i].Regex);
+                    }
+
+                    Regex complexNumsRegex = new Regex(stringNums.ToString());
+
+                    result = complexNumsRegex.Match(expression.Substring(position, length));
+
+                    var subsr1 = expression.Substring(position, length);
+                    Console.WriteLine(subsr1);
+
+                    if (result.Success)
+                    {
+                        var token = new TokenModel(TokenTypesDictionary[i], result.Value);
+                        position += result.Value.Length;
+                        TokenList.Add(token);
+
+                        return true;
+                    }
+                }
+                
+
+                result = regex.Match(expression.Substring(position, length));
+                var subsr = expression.Substring(position, length);
+                Console.WriteLine(subsr);
 
                 if (result.Success)
                 {
@@ -85,6 +129,23 @@ namespace Calculator.Utils
             }
 
             throw new Exception($"Invalid symbol in this position: {position}");
+        }
+
+        private bool CheckLength(Regex regex, int position, int length)
+        {
+            //for numbers
+            if (regex.Match(expression.Substring(position, length)).Success)
+            {
+                return true;
+            }
+
+            //for strings
+            if (regex.Match(expression.Substring(1,1)).Success) //TODO: check length of letters
+            {
+
+            }
+
+            return false;
         }
     }
 }
