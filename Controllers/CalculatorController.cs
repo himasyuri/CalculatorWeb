@@ -130,25 +130,25 @@ namespace Calculator.Controllers
             }
         }
 
-        [HttpPost("Expression")]
-        public async Task<ActionResult> CalcExpression([FromBody] string expression)
-        {
-            try
-            {
-                Lexer lexer = new Lexer(expression);
-                lexer.LexAnalysis();
+        // [HttpPost("Expression")]
+        // public async Task<ActionResult> CalcExpression([FromBody] string expression)
+        // {
+        //     try
+        //     {
+        //         Lexer lexer = new Lexer(expression);
+        //         lexer.LexAnalysis();
 
-                // Parser parser = new Parser(lexer.TokenList, lexer.TokenTypesDictionary);
+        //         // Parser parser = new Parser(lexer.TokenList, lexer.TokenTypesDictionary);
 
-                // var rootNode = parser.ParseString();
+        //         // var rootNode = parser.ParseString();
 
-                // parser.Run(rootNode);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        //         // parser.Run(rootNode);
+        //         return Ok();
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         return BadRequest(ex.Message);
+        //     }
+        // }
     }
 }
