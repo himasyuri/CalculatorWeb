@@ -5,52 +5,34 @@ namespace Calculator.Services
 {
     public class CalculatorService : ICalculatorService
     {
-        public Task<double> DivisionAsync(params double[] numbers)
+        public async Task<double> DivisionAsync(params double[] numbers)
         {
-            Task<double> divTask = new Task<double>(() => BasicMath.Division(numbers));
-            divTask.Start();
-
-            return divTask;
+            return await Task.Run(() => BasicMath.Division(numbers));
         }
 
-        public Task<double> DifferenceAsync(params double[] numbers)
+        public async Task<double> DifferenceAsync(params double[] numbers)
         {
-            Task<double> diffTask = new Task<double>(() => BasicMath.Diff(numbers));
-            diffTask.Start();
-
-            return diffTask;
+            return await Task.Run(() => BasicMath.Diff(numbers));
         }
 
-        public Task<double> MultiplyAsync(params double[] numbers)
+        public async Task<double> MultiplyAsync(params double[] numbers)
         {
-            Task<double> multiplyTask = new Task<double>(() => BasicMath.Multiply(numbers));
-            multiplyTask.Start();
-
-            return multiplyTask;
+            return await Task.Run(() => BasicMath.Multiply(numbers));
         }
 
-        public Task<double> SumAsync(params double[] numbers)
+        public async Task<double> SumAsync(params double[] numbers)
         {
-            Task<double> sumTask = new Task<double>(() => BasicMath.Sum(numbers));
-            sumTask.Start();
-
-            return sumTask;
+            return await Task.Run(() => BasicMath.Sum(numbers));
         }
 
-        public Task<double> PowAsync(double foundation, double power)
+        public async Task<double> PowAsync(double foundation, double power)
         {
-            Task<double> powTask = new Task<double>(() => BasicMath.Pow(foundation, power));
-            powTask.Start();
-
-            return powTask;
+            return await Task.Run(() => BasicMath.Pow(foundation, power));
         }
 
-        public Task<double> SqrtAsync(double value)
+        public async Task<double> SqrtAsync(double value)
         {
-            Task<double> sqrtTask = new Task<double>(() => BasicMath.Sqrt(value));
-            sqrtTask.Start();
-
-            return sqrtTask;
+            return await Task.Run(() => BasicMath.Sqrt(value));
         }
     }
 }
